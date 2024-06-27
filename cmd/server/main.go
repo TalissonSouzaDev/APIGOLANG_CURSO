@@ -2,13 +2,30 @@ package main
 
 import (
 	"ApiGolang/configs"
+	"ApiGolang/internal/entity"
+	"ApiGolang/internal/infra/database"
+	"ApiGolang/internal/webserver/handlers"
+	"net/http"
+
+	"gorm.io/gorm"
 )
 
 func main() {
-	config, err := configs.LoadConfig(".")
+	_, err := configs.LoadConfig(".")
 	if err != nil {
 		panic(err)
 	}
 
-	println(config.DBDrivee)
+	db, err := gorm.Open(sqlite.Open("teste.db"), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	db.AutoMigrate(&entity.User{}, &entity.Product{})
+
+	productDB := database.NewProduct(db)
+	productHandler := handlers.NewProductHandler(productDB)
+
+	http.HandleFunc("/product", productHandler.CreateProduct)
+	http.ListenAndServe("8000", nil)
+
 }
