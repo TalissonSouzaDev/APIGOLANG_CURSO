@@ -28,7 +28,10 @@ func main() {
 	productHandler := handlers.NewProductHandler(productDB)
 
 	r := chi.NewRouter
-	r.POST("/product", productHandler)
+	r.Use(Middlewares.Logger)
+	r.POST("/product", productHandler.CreateProduct)
+	r.GET("/product/{id}", productHandler.GetProduct)
+	r.PUT("/product/{id}", productHandler.UpdateProduct)
 
 	http.ListenAndServe("8000", r)
 

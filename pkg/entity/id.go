@@ -1,4 +1,4 @@
-package entity
+package pkgentity
 
 import "github.com/google/uuid"
 
