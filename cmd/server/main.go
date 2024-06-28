@@ -7,6 +7,8 @@ import (
 	"ApiGolang/internal/webserver/handlers"
 	"net/http"
 
+	"github.com/go-chi/chi"
+
 	"gorm.io/gorm"
 )
 
@@ -25,7 +27,9 @@ func main() {
 	productDB := database.NewProduct(db)
 	productHandler := handlers.NewProductHandler(productDB)
 
-	http.HandleFunc("/product", productHandler.CreateProduct)
-	http.ListenAndServe("8000", nil)
+	r := chi.NewRouter
+	r.POST("/product", productHandler)
+
+	http.ListenAndServe("8000", r)
 
 }
